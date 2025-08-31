@@ -4,4 +4,4 @@ folder_id        = "b1g7jgrmmcumg8459456"
 zone             = "ru-central1-a"
 
 vm_ids           = ["vm-id-1", "vm-id-2", "vm-id-3"]
-cron_trigger     = "0-4 8 ? * * *"  # Increase or decrease the number of minutes to start a larger number of VMs, as it's an async operation which is limited
+cron_trigger     = "0-4 20 ? * * *" # Increase or decrease the number of minutes to stop a larger number of VMs, as it's an async operation which is limited

@@ -3,8 +3,8 @@ locals {
 }
 
 resource "local_file" "vm_list" {
-  content  = join("\n", var.vm_ids)
-  filename = "${path.module}/src/vms.txt"
+  content  = join("\n", var.ig_ids)
+  filename = "${path.module}/src/igs.txt"
 }
 
 # Code file
@@ -26,9 +26,9 @@ resource "random_string" "random" {
 }
 
 # Yandex Cloud Function
-resource "yandex_function" "main" {
+resource "yandex_function" "scale-up" {
   folder_id          = var.folder_id
-  name               = "cloudops-${local.scenario}-${random_string.random.result}"
+  name               = "cloudops-${local.scenario}-up-${random_string.random.result}"
   runtime            = "bash-2204"
   entrypoint         = "handler.sh"
   memory             = "128"
@@ -39,17 +39,52 @@ resource "yandex_function" "main" {
   content {
     zip_filename = data.archive_file.function.output_path
   }
+
+  environment = {
+    SCALE     = var.instances_max
+  }
+}
+
+resource "yandex_function" "scale-down" {
+  folder_id          = var.folder_id
+  name               = "cloudops-${local.scenario}-down-${random_string.random.result}"
+  runtime            = "bash-2204"
+  entrypoint         = "handler.sh"
+  memory             = "128"
+  execution_timeout  = "120"
+  service_account_id = yandex_iam_service_account.sa.id
+
+  user_hash = data.archive_file.function.output_base64sha256
+  content {
+    zip_filename = data.archive_file.function.output_path
+  }
+
+   environment = {
+    SCALE     = var.instances_min
+  }
 }
 
 # Yandex Cloud Trigger
-resource "yandex_function_trigger" "cron" {
-  name        = "cloudops-${local.scenario}-${random_string.random.result}"
+resource "yandex_function_trigger" "cron-up" {
+  name        = "cloudops-${local.scenario}-up-${random_string.random.result}"
   description = "cloudops-${local.scenario}-${random_string.random.result}"
   timer {
-    cron_expression = "${var.cron_trigger}"
+    cron_expression = "${var.cron_scale_up}"
   }
   function {
-    id = yandex_function.main.id
+    id = yandex_function.scale-up.id
+    service_account_id = yandex_iam_service_account.sa-invoker.id
+  }
+}
+
+resource "yandex_function_trigger" "cron-down" {
+  name        = "cloudops-${local.scenario}-down-${random_string.random.result}"
+  description = "cloudops-${local.scenario}-${random_string.random.result}"
+  timer {
+    cron_expression = "${var.cron_scale_down}"
+  }
+  function {
+    id = yandex_function.scale-down.id
     service_account_id = yandex_iam_service_account.sa-invoker.id
   }
 }
@@ -61,10 +96,10 @@ resource "yandex_iam_service_account" "sa" {
   description     = "cloudops-${local.scenario}-sa-${random_string.random.result}"
 }
 
-resource "yandex_resourcemanager_folder_iam_member" "sa-compute-operator" {
+resource "yandex_resourcemanager_folder_iam_member" "sa-compute-editor" {
   folder_id       = var.folder_id
   member          = "serviceAccount:${yandex_iam_service_account.sa.id}"
-  role            = "compute.operator"
+  role            = "compute.editor"
 }
 
 # Create service account for the trigger

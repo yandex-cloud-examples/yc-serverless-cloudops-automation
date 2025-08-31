@@ -1,7 +1,7 @@
 variable "scenario" {
   description = "Scenario name for resource naming"
   type        = string
-  default     = "start-vm"
+  default     = "stop-vm"
 }
 
 variable "provider_key_file" {
@@ -32,7 +32,7 @@ variable "vm_ids" {
 }
 
 variable "cron_trigger" {
-  description = "Cron trigger for VM start"
+  description = "Cron trigger for VM stop"
   type        = string
-  default     = "0-4 8 ? * * *"
+  default     = "0-4 20 ? * * *"
 }

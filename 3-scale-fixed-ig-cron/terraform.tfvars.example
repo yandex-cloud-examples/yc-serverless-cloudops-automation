@@ -1,0 +1,12 @@
+provider_key_file = "../key.json"
+cloud_id         = "b1g3o4minpkuh10pd2rj"
+folder_id        = "b1g7jgrmmcumg8459456"
+zone             = "ru-central1-a"
+
+ig_ids = [ 
+    "cl13bo9srp298ihju68b",
+]
+cron_scale_up     = "0-2 8 ? * * *"   # Increase or decrease the number of minutes to start a larger number of VMs, as it's an async operation which is limited
+cron_scale_down   = "0-2 20 ? * * *"  # Increase or decrease the number of minutes to start a larger number of VMs, as it's an async operation which is limited
+instances_min     = 1
+instances_max     = 5
