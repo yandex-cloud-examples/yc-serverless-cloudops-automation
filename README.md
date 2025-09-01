@@ -4,25 +4,13 @@ This repository contains Terraform modules for automating common cloud operation
 
 ## Available automations
 
-### 1. Start VM Cron (`1-start-vm-cron`)
-Automatically starts specified virtual machines on a schedule.
-
-**Use case:** Start development/testing VMs every morning at 8:00 AM
-
-### 2. Stop VM Cron (`2-stop-vm-cron`)
-Automatically stops specified virtual machines on a schedule.
-
-**Use case:** Stop development/testing VMs every evening at 8:00 PM to save costs
-
-### 3. Scale Instance Groups Cron (`3-scale-fixed-ig-cron`)
-Automatically scales Yandex Cloud Instance Groups up and down on a schedule.
-
-**Use case:** Scale production workloads up during business hours and down during nights/weekends
-
-### 4. Bucket Clean Up (`4-bucket-clean-up`)
-Automatically deletes objects from Object Storage buckets based on key prefix.
-
-**Use case:** Clean up temporary files, logs, or old backups on a schedule
+| Function | Directory | Description | Use Case |
+|----------|-----------|-------------|----------|
+| **Start VM Cron** | `1-start-vm-cron` | Automatically starts specified virtual machines on a schedule | Start development/testing VMs every morning at 8:00 AM |
+| **Stop VM Cron** | `2-stop-vm-cron` | Automatically stops specified virtual machines on a schedule | Stop development/testing VMs every evening at 8:00 PM to save costs |
+| **Scale Instance Groups** | `3-scale-fixed-ig-cron` | Automatically scales Yandex Cloud Instance Groups up and down on schedule | Scale production workloads up during business hours and down during nights/weekends |
+| **Bucket Clean Up** | `4-bucket-clean-up` | Automatically deletes objects from Object Storage buckets based on key prefix | Clean up temporary files, logs, or old backups on schedule |
+| **Auto Copy Bucket Objects** | `5-auto-copy-bucket-objects` | Automatically copies objects between Object Storage buckets. [Tutorial is also available](https://yandex.cloud/en/docs/functions/tutorials/bucket-to-bucket). | Backup important data or sync buckets on schedule |
 
 ## Quick Start
 
@@ -61,9 +49,9 @@ Automatically deletes objects from Object Storage buckets based on key prefix.
 
 ## Prerequisites
 
-* Yandex Cloud CLI (yc) installed and configured
+* [Yandex Cloud CLI (yc)](https://yandex.cloud/en/docs/cli/operations/install-cli) installed and configured
 * Terraform
-* Service account key file for Yandex Cloud
+* [Service account authorized key file](https://yandex.cloud/en/docs/iam/operations/authentication/manage-authorized-keys#console_1) for Yandex Cloud
 
 ## Configuration
 
@@ -80,4 +68,4 @@ All scenarios share this common provider configuration:
 * `provider_key_file` - Path to service account key file
 * `cloud_id` - Yandex Cloud ID
 * `folder_id` - Yandex Cloud folder ID
-* `zone` - Yandex Cloud zone (default: `ru-central1-a`)
+* `zone` - Yandex Cloud availability zone (default: `ru-central1-a`)
