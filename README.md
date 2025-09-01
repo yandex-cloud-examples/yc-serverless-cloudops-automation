@@ -49,9 +49,9 @@ This repository contains Terraform modules for automating common cloud operation
 
 ## Prerequisites
 
-* Yandex Cloud CLI (yc) installed and configured
+* [Yandex Cloud CLI (yc)](https://yandex.cloud/en/docs/cli/operations/install-cli) installed and configured
 * Terraform
-* Service account key file for Yandex Cloud
+* [Service account authorized key file](https://yandex.cloud/en/docs/iam/operations/authentication/manage-authorized-keys#console_1) for Yandex Cloud
 
 ## Configuration
 
