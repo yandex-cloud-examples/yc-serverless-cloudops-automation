@@ -68,4 +68,4 @@ All scenarios share this common provider configuration:
 * `provider_key_file` - Path to service account key file
 * `cloud_id` - Yandex Cloud ID
 * `folder_id` - Yandex Cloud folder ID
-* `zone` - Yandex Cloud zone (default: `ru-central1-a`)
+* `zone` - Yandex Cloud availability zone (default: `ru-central1-a`)
