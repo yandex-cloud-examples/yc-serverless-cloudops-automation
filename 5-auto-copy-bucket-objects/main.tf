@@ -20,11 +20,11 @@ resource "random_string" "random" {
 resource "yandex_function" "main" {
   folder_id          = var.folder_id
   name               = "cloudops-${local.scenario}-${random_string.random.result}"
-  description        = "${var.bucket} cloudops-${local.scenario}-${random_string.random.result}"
-  runtime            = "python312"
-  entrypoint         = "main.handler"
+  description        = "${var.source_bucket} to ${var.target_bucket}"
+  runtime            = "bash-2204"
+  entrypoint         = "handler.sh"
   memory             = "128"
-  execution_timeout  = "300"
+  execution_timeout  = "600"
   service_account_id = yandex_iam_service_account.sa.id
 
   user_hash = data.archive_file.function.output_base64sha256
@@ -32,26 +32,23 @@ resource "yandex_function" "main" {
     zip_filename = data.archive_file.function.output_path
   }
 
-  environment = merge(
-    {
-      S3_BUCKET = var.bucket,
-      S3_ENDPOINT = "https://storage.yandexcloud.net"
-    },
-    var.key_prefix != "" ? { S3_PREFIX = var.key_prefix } : {}
-  )
+  environment = {
+    S3_ENDPOINT   = "https://storage.yandexcloud.net"
+    TARGET_BUCKET = "${var.target_bucket}"
+  }
 
   secrets {
     id                   = yandex_lockbox_secret.secret-aws.id
     version_id           = yandex_lockbox_secret_version.secret-aws-v1.id
     key                  = "access_key"
-    environment_variable = "S3_KEY"
+    environment_variable = "AWS_ACCESS_KEY_ID"
   }
 
   secrets {
     id                   = yandex_lockbox_secret.secret-aws.id
     version_id           = yandex_lockbox_secret_version.secret-aws-v1.id
     key                  = "secret_key"
-    environment_variable = "S3_SECRET"
+    environment_variable = "AWS_SECRET_ACCESS_KEY"
   }
   depends_on = [yandex_lockbox_secret_iam_member.viewer]
 }
@@ -59,10 +56,14 @@ resource "yandex_function" "main" {
 # Yandex Cloud Trigger
 resource "yandex_function_trigger" "cron" {
   name        = "cloudops-${local.scenario}-${random_string.random.result}"
-  description = "${var.bucket} cloudops-${local.scenario}-${random_string.random.result}"
-  timer {
-    cron_expression = "${var.cron_trigger}"
-  }
+  description = "${var.source_bucket} to ${var.target_bucket}"
+
+  object_storage {
+      bucket_id = var.source_bucket
+      create    = true
+      batch_cutoff = 5
+  }  
+
   function {
     id = yandex_function.main.id
     service_account_id = yandex_iam_service_account.sa-invoker.id
@@ -77,11 +78,18 @@ resource "yandex_iam_service_account" "sa" {
   description     = "cloudops-${local.scenario}-sa-${random_string.random.result}"
 }
 
-resource "yandex_resourcemanager_folder_iam_member" "sa-storage-editor" {
+resource "yandex_resourcemanager_folder_iam_member" "sa-storage-uploader" {
   folder_id       = var.folder_id
   member          = "serviceAccount:${yandex_iam_service_account.sa.id}"
-  role            = "storage.editor"
+  role            = "storage.uploader"
 }
+
+resource "yandex_resourcemanager_folder_iam_member" "sa-storage-viewer" {
+  folder_id       = var.folder_id
+  member          = "serviceAccount:${yandex_iam_service_account.sa.id}"
+  role            = "storage.viewer"
+}
+
 
 # Create service account for the trigger
 resource "yandex_iam_service_account" "sa-invoker" {

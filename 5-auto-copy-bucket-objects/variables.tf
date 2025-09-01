@@ -1,7 +1,7 @@
 variable "scenario" {
   description = "Scenario name for resource naming"
   type        = string
-  default     = "start-vm"
+  default     = "copy-objects"
 }
 
 variable "provider_key_file" {
@@ -25,14 +25,14 @@ variable "zone" {
   default     = "ru-central1-a"
 }
 
-variable "vm_ids" {
-  description = "List of VM IDs to start."
-  type        = list(string)
-  default     = []
+variable "source_bucket" {
+  description = "Source bucket to copy objects from."
+  type        = string
+  default     = "bucket"
 }
 
-variable "cron_trigger" {
-  description = "Cron trigger for VM start."
+variable "target_bucket" {
+  description = "Source bucket to copy objects to."
   type        = string
-  default     = "0-5 8 ? * * *"
+  default     = "bucket"
 }

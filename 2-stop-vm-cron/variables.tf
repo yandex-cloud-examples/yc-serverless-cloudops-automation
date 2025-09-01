@@ -26,13 +26,13 @@ variable "zone" {
 }
 
 variable "vm_ids" {
-  description = "List of VM IDs to start"
+  description = "List of VM IDs to start."
   type        = list(string)
   default     = []
 }
 
 variable "cron_trigger" {
-  description = "Cron trigger for VM stop"
+  description = "Cron trigger for VM stop."
   type        = string
   default     = "0-5 20 ? * * *"
 }

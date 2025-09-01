@@ -10,6 +10,7 @@ def handler(event, context):
         prefix = os.environ.get('S3_PREFIX', '')
         s3_key = os.environ.get('S3_KEY')
         s3_secret = os.environ.get('S3_SECRET')
+        s3_endpoint = os.environ.get('S3_ENDPOINT')
 
         # Validate required environment variables
         if not all([bucket_name, s3_key, s3_secret]):
@@ -23,7 +24,7 @@ def handler(event, context):
         # Initialize S3 client for Yandex Cloud
         s3_client = boto3.client(
             's3',
-            endpoint_url='https://storage.yandexcloud.net',
+            endpoint_url=s3_endpoint,
             region_name='ru-central1',
             aws_access_key_id=s3_key,
             aws_secret_access_key=s3_secret

@@ -26,31 +26,31 @@ variable "zone" {
 }
 
 variable "ig_ids" {
-  description = "List of Instance Group IDs to scale"
+  description = "List of Instance Group IDs to scale."
   type        = list(string)
   default     = []
 }
 
 variable "cron_scale_up" {
-  description = "Cron trigger for Instance Group scale up"
+  description = "Cron trigger for Instance Group scale up."
   type        = string
   default     = "0-2 8 ? * * *"
 }
 
 variable "cron_scale_down" {
-  description = "Cron trigger for Instance Group scale down"
+  description = "Cron trigger for Instance Group scale down."
   type        = string
   default     = "0-2 8 ? * * *"
 }
 
 variable "instances_min" {
-  description = "Minimum number of instances in a group"
+  description = "Minimum number of instances in a group."
   type        = number
   default     = 1
 }
 
 variable "instances_max" {
-  description = "Maximum number of instances in a group"
+  description = "Maximum number of instances in a group."
   type        = number
   default     = 5
 }
