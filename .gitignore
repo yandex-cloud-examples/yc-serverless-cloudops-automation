@@ -12,7 +12,5 @@ __pycache__/
 .pytest_cache/
 
 # Various
-.aider*
 key.json
 *.zip
-*.txt
