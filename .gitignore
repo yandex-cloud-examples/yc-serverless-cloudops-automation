@@ -1,0 +1,16 @@
+# Terraform files
+.terraform
+.terraform.lock.hcl
+private.auto.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Various
+key.json
+*.zip
