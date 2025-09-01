@@ -7,7 +7,6 @@ resource "local_file" "vm_list" {
   filename = "${path.module}/src/igs.txt"
 }
 
-# Code file
 data "archive_file" "function" {
   type        = "zip"
   source_dir  = "${path.module}/src"
@@ -16,7 +15,6 @@ data "archive_file" "function" {
   depends_on = [local_file.vm_list]
 }
 
-# Random
 resource "random_string" "random" {
   length    = 4
   upper     = false

@@ -1,7 +1,7 @@
 variable "scenario" {
   description = "Scenario name for resource naming"
   type        = string
-  default     = "stop-vm"
+  default     = "bucket-clean-up"
 }
 
 variable "provider_key_file" {
@@ -25,14 +25,20 @@ variable "zone" {
   default     = "ru-central1-a"
 }
 
-variable "vm_ids" {
-  description = "List of VM IDs to start"
-  type        = list(string)
-  default     = []
+variable "bucket" {
+  description = "Object Storage bucket for clean-up."
+  type        = string
+  default     = "bucket-name"
+}
+
+variable "key_prefix" {
+  description = "Key prefix of objects to be deleted."
+  type        = string
+  default     = ""
 }
 
 variable "cron_trigger" {
-  description = "Cron trigger for VM stop"
+  description = "Cron trigger for bucket clean up."
   type        = string
-  default     = "0-5 20 ? * * *"
+  default     = "0-4 8 ? * * *"
 }

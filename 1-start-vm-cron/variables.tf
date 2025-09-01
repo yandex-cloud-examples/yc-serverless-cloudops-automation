@@ -34,5 +34,5 @@ variable "vm_ids" {
 variable "cron_trigger" {
   description = "Cron trigger for VM start"
   type        = string
-  default     = "0-4 8 ? * * *"
+  default     = "0-5 8 ? * * *"
 }
