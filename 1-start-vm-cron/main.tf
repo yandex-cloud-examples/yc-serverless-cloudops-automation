@@ -52,6 +52,7 @@ resource "yandex_function_trigger" "cron" {
     id = yandex_function.main.id
     service_account_id = yandex_iam_service_account.sa-invoker.id
   }
+  depends_on = [yandex_function.main]
 }
 
 # Service account for the function

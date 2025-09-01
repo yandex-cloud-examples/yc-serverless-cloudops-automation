@@ -75,6 +75,7 @@ resource "yandex_function_trigger" "cron-up" {
     id = yandex_function.scale-up.id
     service_account_id = yandex_iam_service_account.sa-invoker.id
   }
+  depends_on = [yandex_function.scale-up]
 }
 
 resource "yandex_function_trigger" "cron-down" {
@@ -87,6 +88,7 @@ resource "yandex_function_trigger" "cron-down" {
     id = yandex_function.scale-down.id
     service_account_id = yandex_iam_service_account.sa-invoker.id
   }
+  depends_on = [yandex_function.scale-down]
 }
 
 # Service account for the function
