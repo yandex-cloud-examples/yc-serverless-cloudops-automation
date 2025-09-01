@@ -21,10 +21,10 @@ resource "yandex_function" "main" {
   folder_id          = var.folder_id
   name               = "cloudops-${local.scenario}-${random_string.random.result}"
   description        = "${var.bucket} cloudops-${local.scenario}-${random_string.random.result}"
-  runtime            = "python312"
-  entrypoint         = "main.handler"
+  runtime            = "bash-2204"
+  entrypoint         = "handler.sh"
   memory             = "128"
-  execution_timeout  = "300"
+  execution_timeout  = "600"
   service_account_id = yandex_iam_service_account.sa.id
 
   user_hash = data.archive_file.function.output_base64sha256
@@ -44,14 +44,14 @@ resource "yandex_function" "main" {
     id                   = yandex_lockbox_secret.secret-aws.id
     version_id           = yandex_lockbox_secret_version.secret-aws-v1.id
     key                  = "access_key"
-    environment_variable = "S3_KEY"
+    environment_variable = "AWS_ACCESS_KEY_ID"
   }
 
   secrets {
     id                   = yandex_lockbox_secret.secret-aws.id
     version_id           = yandex_lockbox_secret_version.secret-aws-v1.id
     key                  = "secret_key"
-    environment_variable = "S3_SECRET"
+    environment_variable = "AWS_SECRET_ACCESS_KEY"
   }
   depends_on = [yandex_lockbox_secret_iam_member.viewer]
 }
