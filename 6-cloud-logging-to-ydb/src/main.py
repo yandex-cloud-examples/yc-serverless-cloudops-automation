@@ -53,12 +53,10 @@ class SimpleYDB:
                 if value is None:
                     values.append("NULL")
                 elif col == 'time' and isinstance(value, int):
-                    # Handle timestamp - YDB expects ISO format string in Timestamp function
-                    dt = datetime.fromtimestamp(value / 1000000)  # Convert microseconds to seconds
+                    dt = datetime.fromtimestamp(value / 1000000)
                     iso_string = dt.strftime('%Y-%m-%dT%H:%M:%SZ')
                     values.append(f"Timestamp('{iso_string}')")
                 elif col == 'smartwebsecurity' and isinstance(value, dict):
-                    # Handle JSON field
                     json_str = json.dumps(value).replace("'", "''")
                     values.append(f"Json('{json_str}')")
                 elif isinstance(value, str):
@@ -97,7 +95,6 @@ def handler(event, context):
         logger.info(f"Event: {event}")
         logger.info(f"Context: {context}")
 
-    # Get YDB connection parameters from environment
     ydb_endpoint = os.environ['YDB_ENDPOINT']
     ydb_database = os.environ['YDB_DATABASE']
     table_name = os.environ.get('YDB_TABLE_NAME', 'load_balancer_requests')
@@ -109,26 +106,21 @@ def handler(event, context):
         with SimpleYDB(ydb_endpoint, ydb_database) as db:
             messages = event['messages'][0]['details']['messages']
 
-            # Prepare rows for insertion
             rows_to_insert = []
 
             for message in messages:
                 alb_message = message['json_payload']
                 print(alb_message)
                 
-                # Parse timestamp to proper format
                 time_str = alb_message.get('time', '')
                 try:
-                    # Convert ISO format to timestamp
                     dt = datetime.fromisoformat(time_str.replace('Z', '+00:00'))
-                    timestamp = int(dt.timestamp() * 1000000)  # YDB Timestamp in microseconds
+                    timestamp = int(dt.timestamp() * 1000000)
                 except:
                     timestamp = 0
                 
-                # Get request processing times
                 processing_times = alb_message.get('request_processing_times', {})
                 
-                # Prepare row data with all available fields
                 row = {
                     'request_id': alb_message.get('request_id', ''),
                     'time': timestamp,
@@ -179,7 +171,6 @@ def handler(event, context):
                 if verboseLogging:
                     logger.info(f'Prepared row: {row}')
 
-            # Insert all rows at once
             if db.insert_rows(table_name, rows_to_insert):
                 statusCode = 200
                 logger.info(f'Successfully inserted {len(rows_to_insert)} rows')

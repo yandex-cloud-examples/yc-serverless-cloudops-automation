@@ -30,3 +30,9 @@ variable "logging_group" {
   type        = string
   default     = "bucket"
 }
+
+variable "ydb_table_name" {
+  description = "YDB Table name for Cloud Logging logs."
+  type        = string
+  default     = "load_balancer_requests"
+}
