@@ -55,8 +55,8 @@ resource "yandex_function_trigger" "logging" {
   logging {
      group_id       = "${var.logging_group}"
      
-     batch_cutoff   = 10
-     batch_size     = 10
+     batch_cutoff   = 60
+     batch_size     = 100
   }
 
   function {
