@@ -11,6 +11,7 @@ This repository contains Terraform modules for automating common cloud operation
 | **Scale Instance Groups** | `3-scale-fixed-ig-cron` | Automatically scales Yandex Cloud Instance Groups up and down on schedule | Scale production workloads up during business hours and down during nights/weekends |
 | **Bucket Clean Up** | `4-bucket-clean-up` | Automatically deletes objects from Object Storage buckets based on key prefix | Clean up temporary files, logs, or old backups on schedule |
 | **Auto Copy Bucket Objects** | `5-auto-copy-bucket-objects` | Automatically copies objects between Object Storage buckets. [Tutorial is also available](https://yandex.cloud/en/docs/functions/tutorials/bucket-to-bucket). | Backup important data or sync buckets on schedule |
+| **ALB Logs to YDB** | `6-alb-logging-to-ydb` | Automatically processes Cloud Logging messages from ALB and stores them in YDB for analysis | Store and analyze load balancer logs in a structured database |
 
 ## Quick Start
 
