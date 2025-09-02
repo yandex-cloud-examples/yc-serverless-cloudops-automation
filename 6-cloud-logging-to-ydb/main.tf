@@ -130,7 +130,7 @@ resource "yandex_ydb_database_serverless" "db" {
   name                = "${var.logging_group}-cloudops-${local.scenario}-${random_string.random.result}"
 }
 
-# YDB Table for Load Balancer logs
+# YDB Table
 resource "yandex_ydb_table" "load_balancer_requests" {
   path              = "load_balancer_requests"
   connection_string = yandex_ydb_database_serverless.db.ydb_full_endpoint

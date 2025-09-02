@@ -54,7 +54,7 @@ class SimpleYDB:
                     values.append("NULL")
                 elif col == 'time' and isinstance(value, int):
                     # Handle timestamp - convert microseconds to YDB Timestamp
-                    values.append(f"Timestamp('{value}')")
+                    values.append(f"Timestamp({value})")
                 elif isinstance(value, str):
                     escaped_value = value.replace("'", "''")
                     values.append(f"'{escaped_value}'")
