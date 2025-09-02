@@ -52,6 +52,9 @@ class SimpleYDB:
                 value = row[col]
                 if value is None:
                     values.append("NULL")
+                elif col == 'time' and isinstance(value, int):
+                    # Handle timestamp - convert microseconds to YDB Timestamp
+                    values.append(f"Timestamp('{value}')")
                 elif isinstance(value, str):
                     escaped_value = value.replace("'", "''")
                     values.append(f"'{escaped_value}'")
@@ -106,13 +109,35 @@ def handler(event, context):
             for message in messages:
                 alb_message = message['json_payload']
                 print(alb_message)
-                # Prepare row data - adjust fields based on your table structure
+                
+                # Parse timestamp to proper format
+                time_str = alb_message.get('time', '')
+                try:
+                    # Convert ISO format to timestamp
+                    dt = datetime.fromisoformat(time_str.replace('Z', '+00:00'))
+                    timestamp = int(dt.timestamp() * 1000000)  # YDB Timestamp in microseconds
+                except:
+                    timestamp = 0
+                
+                # Prepare row data with all relevant fields
                 row = {
+                    'request_id': alb_message.get('request_id', ''),
+                    'time': timestamp,
                     'type': alb_message.get('type', ''),
-                    'time': alb_message.get('time', ''),
-                    'http_status': str(alb_message.get('http_status', '')),
+                    'client_ip': alb_message.get('client_ip', ''),
                     'backend_ip': alb_message.get('backend_ip', ''),
-                    'request_time': alb_message.get('request_processing_times', {}).get('request_time', 0)
+                    'http_method': alb_message.get('http_method', ''),
+                    'http_status': alb_message.get('http_status', 0),
+                    'request_uri': alb_message.get('request_uri', ''),
+                    'user_agent': alb_message.get('user_agent', ''),
+                    'authority': alb_message.get('authority', ''),
+                    'request_time': alb_message.get('request_processing_times', {}).get('request_time', 0.0),
+                    'backend_processing_time': alb_message.get('request_processing_times', {}).get('backend_processing_time', 0.0),
+                    'request_body_bytes': alb_message.get('request_body_bytes', 0),
+                    'response_body_bytes': alb_message.get('response_body_bytes', 0),
+                    'load_balancer_id': alb_message.get('load_balancer_id', ''),
+                    'backend_name': alb_message.get('backend_name', ''),
+                    'route_name': alb_message.get('route_name', '')
                 }
 
                 rows_to_insert.append(row)

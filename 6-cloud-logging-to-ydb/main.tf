@@ -33,8 +33,9 @@ resource "yandex_function" "main" {
   }
 
   environment = {
-    YDB_ENDPOINT  = "grpcs://ydb.serverless.yandexcloud.net:2135"
-    YDB_DATABASE  = "${yandex_ydb_database_serverless.db.database_path}"
+    YDB_ENDPOINT   = "grpcs://ydb.serverless.yandexcloud.net:2135"
+    YDB_DATABASE   = yandex_ydb_database_serverless.db.database_path
+    YDB_TABLE_NAME = yandex_ydb_table.load_balancer_requests.path
   }
 
   secrets {
@@ -127,4 +128,114 @@ resource "yandex_lockbox_secret_iam_member" "viewer" {
 # YDB Serverless
 resource "yandex_ydb_database_serverless" "db" {
   name                = "${var.logging_group}-cloudops-${local.scenario}-${random_string.random.result}"
+}
+
+# YDB Table for Load Balancer logs
+resource "yandex_ydb_table" "load_balancer_requests" {
+  path              = "load_balancer_requests"
+  connection_string = yandex_ydb_database_serverless.db.ydb_full_endpoint
+
+  column {
+    name     = "request_id"
+    type     = "Utf8"
+    not_null = true
+  }
+  
+  column {
+    name     = "time"
+    type     = "Timestamp"
+    not_null = true
+  }
+  
+  column {
+    name     = "type"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "client_ip"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "backend_ip"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "http_method"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "http_status"
+    type     = "Uint32"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_uri"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "user_agent"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "authority"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_time"
+    type     = "Double"
+    not_null = false
+  }
+  
+  column {
+    name     = "backend_processing_time"
+    type     = "Double"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_body_bytes"
+    type     = "Uint64"
+    not_null = false
+  }
+  
+  column {
+    name     = "response_body_bytes"
+    type     = "Uint64"
+    not_null = false
+  }
+  
+  column {
+    name     = "load_balancer_id"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "backend_name"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "route_name"
+    type     = "Utf8"
+    not_null = false
+  }
+
+  primary_key = ["request_id", "time"]
 }
