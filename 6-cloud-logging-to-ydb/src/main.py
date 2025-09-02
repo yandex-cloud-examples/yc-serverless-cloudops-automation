@@ -53,8 +53,9 @@ class SimpleYDB:
                 if value is None:
                     values.append("NULL")
                 elif col == 'time' and isinstance(value, int):
-                    # Handle timestamp - convert microseconds to YDB Timestamp
-                    values.append(f"Timestamp({value})")
+                    dt = datetime.fromtimestamp(value / 1000000)
+                    iso_string = dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+                    values.append(f"Timestamp('{iso_string}')")
                 elif isinstance(value, str):
                     escaped_value = value.replace("'", "''")
                     values.append(f"'{escaped_value}'")
