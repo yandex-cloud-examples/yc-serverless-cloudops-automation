@@ -132,7 +132,7 @@ resource "yandex_ydb_database_serverless" "db" {
 
 # YDB Table
 resource "yandex_ydb_table" "load_balancer_requests" {
-  path              = "${ydb_table_name}"
+  path              = "${var.ydb_table_name}"
   connection_string = yandex_ydb_database_serverless.db.ydb_full_endpoint
 
   column {
