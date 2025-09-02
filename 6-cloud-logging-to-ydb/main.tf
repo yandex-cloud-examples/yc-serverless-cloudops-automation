@@ -154,7 +154,13 @@ resource "yandex_ydb_table" "load_balancer_requests" {
   }
   
   column {
-    name     = "client_ip"
+    name     = "authority"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "backend_group_id"
     type     = "Utf8"
     not_null = false
   }
@@ -166,7 +172,49 @@ resource "yandex_ydb_table" "load_balancer_requests" {
   }
   
   column {
+    name     = "backend_name"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "backend_port"
+    type     = "Uint32"
+    not_null = false
+  }
+  
+  column {
+    name     = "cipher_suite"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "client_certificate_subject"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "client_ip"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "client_port"
+    type     = "Uint32"
+    not_null = false
+  }
+  
+  column {
     name     = "http_method"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "http_router_id"
     type     = "Utf8"
     not_null = false
   }
@@ -178,7 +226,67 @@ resource "yandex_ydb_table" "load_balancer_requests" {
   }
   
   column {
+    name     = "http_version"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "load_balancer_id"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_body_bytes"
+    type     = "Uint64"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_headers_bytes"
+    type     = "Uint64"
+    not_null = false
+  }
+  
+  column {
     name     = "request_uri"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "response_body_bytes"
+    type     = "Uint64"
+    not_null = false
+  }
+  
+  column {
+    name     = "response_headers_bytes"
+    type     = "Uint64"
+    not_null = false
+  }
+  
+  column {
+    name     = "route_name"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "server_certificate_subject"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "sni_hostname"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "tls_version"
     type     = "Utf8"
     not_null = false
   }
@@ -190,8 +298,39 @@ resource "yandex_ydb_table" "load_balancer_requests" {
   }
   
   column {
-    name     = "authority"
+    name     = "virtual_host_name"
     type     = "Utf8"
+    not_null = false
+  }
+  
+  column {
+    name     = "x_forwarded_for"
+    type     = "Utf8"
+    not_null = false
+  }
+  
+  # Request processing times
+  column {
+    name     = "backend_processing_time"
+    type     = "Double"
+    not_null = false
+  }
+  
+  column {
+    name     = "backend_response_time"
+    type     = "Double"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_processing_time"
+    type     = "Double"
+    not_null = false
+  }
+  
+  column {
+    name     = "request_rx_time"
+    type     = "Double"
     not_null = false
   }
   
@@ -202,38 +341,39 @@ resource "yandex_ydb_table" "load_balancer_requests" {
   }
   
   column {
-    name     = "backend_processing_time"
+    name     = "request_tx_time"
     type     = "Double"
     not_null = false
   }
   
   column {
-    name     = "request_body_bytes"
-    type     = "Uint64"
+    name     = "response_processing_time"
+    type     = "Double"
     not_null = false
   }
   
   column {
-    name     = "response_body_bytes"
-    type     = "Uint64"
+    name     = "response_rx_time"
+    type     = "Double"
     not_null = false
   }
   
   column {
-    name     = "load_balancer_id"
-    type     = "Utf8"
+    name     = "response_start_time"
+    type     = "Double"
     not_null = false
   }
   
   column {
-    name     = "backend_name"
-    type     = "Utf8"
+    name     = "response_tx_time"
+    type     = "Double"
     not_null = false
   }
   
+  # SmartWebSecurity fields as JSON
   column {
-    name     = "route_name"
-    type     = "Utf8"
+    name     = "smartwebsecurity"
+    type     = "Json"
     not_null = false
   }
 
