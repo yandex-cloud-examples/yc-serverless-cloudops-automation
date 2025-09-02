@@ -26,7 +26,7 @@ variable "zone" {
 }
 
 variable "logging_group" {
-  description = "Cloud Logging group id to save messages from."
+  description = "ALB Cloud Logging group id to save messages from."
   type        = string
   default     = "bucket"
 }

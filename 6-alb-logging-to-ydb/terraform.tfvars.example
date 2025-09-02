@@ -3,4 +3,4 @@ cloud_id         = "b1g3oxxxxxxxxxxxxxxx"
 folder_id        = "b1g7jxxxxxxxxxxxxxxx"
 zone             = "ru-central1-a"
 
-logging_group    = "logging_group_id"
+logging_group    = "alb_logging_group_id"
