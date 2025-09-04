@@ -55,7 +55,6 @@ class SimpleYDB:
                 if value is None:
                     values.append("NULL")
                 elif col == 'timestamp' and isinstance(value, str):
-                    # Parse ISO timestamp and convert to YDB Timestamp format
                     try:
                         dt = datetime.fromisoformat(value.replace('Z', '+00:00'))
                         iso_string = dt.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -162,7 +161,6 @@ def handler(event, context):
         logger.info(f"Event: {event}")
         logger.info(f"Context: {context}")
 
-    # Get environment variables
     ydb_endpoint = os.environ['YDB_ENDPOINT']
     ydb_database = os.environ['YDB_DATABASE']
     table_name = os.environ.get('YDB_TABLE_NAME', 's3_bucket_logs')
@@ -173,14 +171,11 @@ def handler(event, context):
         logger.info(f'S3 bucket: {s3_bucket}')
 
     try:
-        # Initialize S3 client
         s3_client = get_s3_client()
 
-        # Initialize YDB connection
         with SimpleYDB(ydb_endpoint, ydb_database) as db:
             total_inserted = 0
 
-            # Process each message in the event
             for message in event.get('messages', []):
                 details = message.get('details', {})
                 object_key = details.get('object_id', '')
@@ -191,18 +186,15 @@ def handler(event, context):
 
                 logger.info(f"Processing S3 object: {s3_bucket}/{object_key}")
 
-                # Download S3 object
                 log_content = download_s3_object(s3_client, s3_bucket, object_key)
                 if not log_content:
                     logger.error(f"Failed to download {s3_bucket}/{object_key}")
                     continue
 
-                # Parse log entries
                 log_entries = parse_log_entries(log_content)
                 logger.info(f"Found {len(log_entries)} log entries in {object_key}")
 
-                # Convert and insert in batches
-                batch_size = 1  # Adjust this value as needed
+                batch_size = 1  # batch size if needed
                 rows_to_insert = []
 
                 for log_entry in log_entries:
@@ -212,7 +204,6 @@ def handler(event, context):
                     if verboseLogging:
                         logger.info(f'Prepared row: {row}')
 
-                    # Insert when batch is full
                     if len(rows_to_insert) >= batch_size:
                         if db.insert_rows(table_name, rows_to_insert):
                             total_inserted += len(rows_to_insert)
@@ -221,7 +212,6 @@ def handler(event, context):
                             logger.error(f'Failed to insert batch of {len(rows_to_insert)} rows')
                         rows_to_insert = []
 
-                # Insert remaining rows
                 if rows_to_insert:
                     if db.insert_rows(table_name, rows_to_insert):
                         total_inserted += len(rows_to_insert)
