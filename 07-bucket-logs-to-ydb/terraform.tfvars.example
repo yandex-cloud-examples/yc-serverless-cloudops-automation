@@ -3,4 +3,6 @@ cloud_id         = "b1g3oxxxxxxxxxxxxxxx"
 folder_id        = "b1g7jxxxxxxxxxxxxxxx"
 zone             = "ru-central1-a"
 
+# Бакет в который сохраняются логи действий
+# https://yandex.cloud/ru/docs/storage/concepts/server-logs
 s3_bucket        = "bucket"

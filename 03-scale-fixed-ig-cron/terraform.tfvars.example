@@ -3,10 +3,16 @@ cloud_id         = "b1g3oxxxxxxxxxxxxxxx"
 folder_id        = "b1g7jxxxxxxxxxxxxxxx"
 zone             = "ru-central1-a"
 
+# список идентификаторов групп виртуальных машин
 ig_ids = [ 
     "cl13bo9srp298ihju68b",
 ]
-cron_scale_up     = "0-2 8 ? * * *"   # Increase or decrease the number of minutes to start a larger number of VMs, as it's an async operation which is limited
-cron_scale_down   = "0-2 20 ? * * *"  # Increase or decrease the number of minutes to start a larger number of VMs, as it's an async operation which is limited
+
+# Таймер для расширения и уменьшения групп виртуальных машин
+# Используется async операция для остановки, увеличьте кол-во минут, если список групп большой – например 0-5
+cron_scale_up     = "0-2 8 ? * * *"
+cron_scale_down   = "0-2 20 ? * * *"
+
+# Минимальное и максимальное кол-во виртуальных машин в группе
 instances_min     = 1
 instances_max     = 5

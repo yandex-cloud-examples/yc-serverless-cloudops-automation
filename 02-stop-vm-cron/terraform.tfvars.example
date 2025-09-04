@@ -3,5 +3,5 @@ cloud_id         = "b1g3oxxxxxxxxxxxxxxx"
 folder_id        = "b1g7jxxxxxxxxxxxxxxx"
 zone             = "ru-central1-a"
 
-vm_ids           = ["vm-id-1", "vm-id-2", "vm-id-3"]
-cron_trigger     = "0-5 20 ? * * *" # Increase or decrease the number of minutes to stop a larger number of VMs, as it's an async operation which is limited
+vm_ids           = ["vm-id-1", "vm-id-2", "vm-id-3"] # список идентификаторов ВМ для остановки по расписанию
+cron_trigger     = "0-5 20 ? * * *" # Используется async операция для остановки, увеличьте кол-во минут, если список машин большой – например 0-10 для остановки машин по списку каждую минут

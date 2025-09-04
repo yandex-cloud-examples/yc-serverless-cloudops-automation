@@ -3,5 +3,8 @@ cloud_id         = "b1g3oxxxxxxxxxxxxxxx"
 folder_id        = "b1g7jxxxxxxxxxxxxxxx"
 zone             = "ru-central1-a"
 
+# Бакет из которого нужно копировать новые объекты
 source_bucket    = "bucket"
+
+# Бакет в котором нужно создавать копии объектов
 target_bucket    = "bucket"

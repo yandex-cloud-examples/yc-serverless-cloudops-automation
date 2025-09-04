@@ -3,4 +3,6 @@ cloud_id         = "b1g3oxxxxxxxxxxxxxxx"
 folder_id        = "b1g7jxxxxxxxxxxxxxxx"
 zone             = "ru-central1-a"
 
+# Лог-группа которая содержит логи Application Load Balancer
+# https://yandex.cloud/ru/docs/application-load-balancer/concepts/application-load-balancer#logging
 logging_group    = "alb_logging_group_id"
