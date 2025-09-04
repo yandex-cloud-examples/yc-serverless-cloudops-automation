@@ -64,7 +64,8 @@ resource "yandex_function_trigger" "logging" {
   object_storage {
       bucket_id = var.s3_bucket
       create    = true
-      batch_cutoff = 1
+      batch_cutoff = 0
+      batch_size = 1
   }  
 
   function {

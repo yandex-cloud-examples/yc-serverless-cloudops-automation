@@ -7,7 +7,7 @@ from datetime import datetime
 from botocore.exceptions import ClientError
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.ERROR)
 verboseLogging = eval(os.environ.get('VERBOSE_LOG', 'False'))
 
 if verboseLogging:
@@ -178,7 +178,7 @@ def handler(event, context):
 
         # Initialize YDB connection
         with SimpleYDB(ydb_endpoint, ydb_database) as db:
-            all_rows_to_insert = []
+            total_inserted = 0
 
             # Process each message in the event
             for message in event.get('messages', []):
@@ -201,21 +201,37 @@ def handler(event, context):
                 log_entries = parse_log_entries(log_content)
                 logger.info(f"Found {len(log_entries)} log entries in {object_key}")
 
-                # Convert log entries to table rows
+                # Convert and insert in batches
+                batch_size = 1  # Adjust this value as needed
+                rows_to_insert = []
+
                 for log_entry in log_entries:
                     row = convert_log_entry_to_row(log_entry)
-                    all_rows_to_insert.append(row)
+                    rows_to_insert.append(row)
 
                     if verboseLogging:
                         logger.info(f'Prepared row: {row}')
 
-            # Insert all rows into YDB
-            if all_rows_to_insert:
-                if db.insert_rows(table_name, all_rows_to_insert):
-                    statusCode = 200
-                    logger.info(f'Successfully inserted {len(all_rows_to_insert)} rows')
-                else:
-                    logger.error('Failed to insert rows')
+                    # Insert when batch is full
+                    if len(rows_to_insert) >= batch_size:
+                        if db.insert_rows(table_name, rows_to_insert):
+                            total_inserted += len(rows_to_insert)
+                            logger.info(f'Inserted batch of {len(rows_to_insert)} rows')
+                        else:
+                            logger.error(f'Failed to insert batch of {len(rows_to_insert)} rows')
+                        rows_to_insert = []
+
+                # Insert remaining rows
+                if rows_to_insert:
+                    if db.insert_rows(table_name, rows_to_insert):
+                        total_inserted += len(rows_to_insert)
+                        logger.info(f'Inserted final batch of {len(rows_to_insert)} rows')
+                    else:
+                        logger.error(f'Failed to insert final batch of {len(rows_to_insert)} rows')
+
+            if total_inserted > 0:
+                statusCode = 200
+                logger.info(f'Successfully inserted {total_inserted} total rows')
             else:
                 logger.warning('No rows to insert')
                 statusCode = 200
