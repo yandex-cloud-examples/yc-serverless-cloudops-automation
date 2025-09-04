@@ -1,41 +1,42 @@
-# Yandex Cloud Serverless CloudOpsAutomation
+# Yandex Cloud Serverless CloudOps Automation
 
-This repository contains Terraform modules for automating common cloud operations tasks in Yandex Cloud using Cloud Functions and scheduled triggers.
+Данный репозиторий содержит Terraform модули и примеры с кодом для автоматизации основных задачи управления облачной инфраструктурой.
+Код может использоваться сам по себе, либо в составе Terraform модуля, который разворачивает необходимые, в зависимости от сценария ресурсы: [Cloud Function](https://yandex.cloud/ru/services/functions), [триггеры](https://yandex.cloud/ru/docs/functions/concepts/trigger/), [Yandex Database](https://yandex.cloud/ru/services/ydb).
 
-## Available automations
+## Доступные автоматизации
 
-| Function | Directory | Description | Use Case |
+| Функция | Каталог | Описание | Сценарий |
 |----------|-----------|-------------|----------|
-| **Start VM Cron** | `01-start-vm-cron` | Automatically starts specified virtual machines on a schedule | Start development/testing VMs every morning at 8:00 AM |
-| **Stop VM Cron** | `02-stop-vm-cron` | Automatically stops specified virtual machines on a schedule | Stop development/testing VMs every evening at 8:00 PM to save costs |
-| **Scale Instance Groups** | `03-scale-fixed-ig-cron` | Automatically scales Yandex Cloud Instance Groups up and down on schedule | Scale production workloads up during business hours and down during nights/weekends |
-| **Bucket Clean Up** | `04-bucket-clean-up` | Automatically deletes objects from Object Storage buckets based on key prefix | Clean up temporary files, logs, or old backups on schedule |
-| **Auto Copy Bucket Objects** | `05-auto-copy-bucket-objects` | Automatically copies objects between Object Storage buckets. [Tutorial is also available](https://yandex.cloud/en/docs/functions/tutorials/bucket-to-bucket). | Backup important data or sync buckets on schedule |
-| **ALB Logs to YDB** | `06-alb-logging-to-ydb` | Automatically processes Cloud Logging messages from ALB and stores them in YDB for analysis. [Tutorial for PostgreSQL is available](https://yandex.cloud/en/docs/functions/tutorials/logging) | Store and analyze load balancer logs in a structured database |
-| **S3 Logs to YDB** | `07-bucket-logs-to-ydb` | Automatically processes S3 bucket access logs and stores them in YDB for analysis | Store and analyze S3 bucket access patterns, monitor usage, and track requests in a structured database |
+| **Запуск ВМ по таймеру** | `01-start-vm-cron` | Автоматический запуск ВМ по расписанию | Запуск тестовых ВМ каждое утро в 08:00 |
+| **Остановка ВМ по таймеру** | `02-stop-vm-cron` | Автоматическая остановка ВМ по расписанию | Остановка тестовым ВМ каждый вечер в 20:00 |
+| **Масштабирование группы узлов** | `03-scale-fixed-ig-cron` | Масштабирование группы узлов по расписанию | Наращивание группы узлов по утрам, уменьшение группы узлов по вечерам |
+| **Очистка бакета** | `04-bucket-clean-up` | Автоматическая очистка бакетов по расписанию | Удаление старых бэкапов или временных файлов по заданному расписанию |
+| **Копирование объектов бакета** | `05-auto-copy-bucket-objects` | Автоматическое копирование новых объектов между бакетами Object Storage. [Практическое руководство](https://yandex.cloud/en/docs/functions/tutorials/bucket-to-bucket). | Постоянная репликация между бакетами для резервного копирования |
+| **Сохранение логов ALB в YDB** | `06-alb-logging-to-ydb` | Сохранение логов Application Load Balancer в YDB. [Практическое руководство для PostgreSQL](https://yandex.cloud/ru/docs/functions/tutorials/logging) | Долговременное хранение логов ALB, анализ логов |
+| **Сохранение логов S3 в YDB** | `07-bucket-logs-to-ydb` | Сохранение логов бакета Object Storage в YDB | Долговременное хранение логов доступа к бакету, анализ логов |
 
-## Quick Start
+## Быстрый старт
 
-1. **Clone the repository:**
+1. Склонируйте репозиторий:
     ```bash
-    git clone <repository-url>
-    cd yandex-cloudops-functions
+    git clone https://github.com/yandex-cloud-examples/yc-serverless-cloudops-automation.git
+    cd yc-serverless-cloudops-automation
     ```
 
-2. Choose a scenario and navigate to its directory:
+2. Выберите сценарий и перейдите в нужный каталог:
 
     ```bash
-    cd 1-start-vm-cron
+    cd 01-start-vm-cron
     ```
 
-3. Copy and configure variables:
+3. Скопируйте и заполните переменные:
 
     ```bash
     cp terraform.tfvars.example terraform.tfvars
     # Edit terraform.tfvars with your values
     ```
 
- 4. Deploy with Terraform:
+ 4. Разверните при помощи Terraform:
 
     ```bash
     terraform init
@@ -43,31 +44,31 @@ This repository contains Terraform modules for automating common cloud operation
     terraform apply
     ```
 
- 5. Clean up when done:
+ 5. Удалить можно следующей командой:
 
     ```bash
     terraform destroy
     ```
 
-## Prerequisites
+## Пререквизиты
 
-* [Yandex Cloud CLI (yc)](https://yandex.cloud/en/docs/cli/operations/install-cli) installed and configured
-* Terraform
-* [Service account authorized key file](https://yandex.cloud/en/docs/iam/operations/authentication/manage-authorized-keys#console_1) for Yandex Cloud
+* Установленный и настроенный [Yandex Cloud CLI (yc)](https://yandex.cloud/ru/docs/cli/operations/install-cli) 
+* Установленный [Terraform](https://yandex.cloud/ru/docs/tutorials/infrastructure-management/terraform-quickstart)
+* [Авторизованный ключ](https://yandex.cloud/ru/docs/iam/operations/authentication/manage-authorized-keys#console_1) [сервисного аккаунта](https://yandex.cloud/ru/docs/iam/operations/sa/create), с необходимыми ролями в каталоге (например, `admin`), для создания ресурсов в Yandex Cloud
 
-## Configuration
+## Настройка
 
-Each scenario includes:
+Каждый сценарий содержит следующий набор файлов:
 
-* `variables.tf` - Input variables
-* `terraform.tfvars.example` - Example configuration
-* `main.tf` - Terraform resources
-* `src/` - Function source code
-* `versions.tf` - Provider requirements
+* `variables.tf` - Входные переменные
+* `terraform.tfvars.example` - Пример файла конфигурации для переменных
+* `main.tf` - Описание создаваемых ресурсов
+* `src/` - Код, используемый в функции
+* `versions.tf` - Конфигурация провайдера
 
-All scenarios share this common provider configuration:
+Все сценарии содержат следующие параметры конфигурации провайдера:
 
-* `provider_key_file` - Path to service account key file
-* `cloud_id` - Yandex Cloud ID
-* `folder_id` - Yandex Cloud folder ID
-* `zone` - Yandex Cloud availability zone (default: `ru-central1-a`)
+* `provider_key_file` - путь до авторизованного ключа сервисного аккаунта, созданного ранее
+* `cloud_id` - Идентификатор [облака](https://yandex.cloud/ru/docs/resource-manager/operations/cloud/get-id)
+* `folder_id` - Идентификатор [каталога](https://yandex.cloud/ru/docs/resource-manager/operations/folder/get-id)
+* `zone` - Зона доступности (по умолчанию, `ru-central1-a`)
