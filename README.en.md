@@ -13,6 +13,7 @@ This repository contains Terraform modules for automating common cloud operation
 | **Auto Copy Bucket Objects** | `05-auto-copy-bucket-objects` | Automatically copies objects between Object Storage buckets. [Tutorial is also available](https://yandex.cloud/en/docs/functions/tutorials/bucket-to-bucket). | Backup important data or sync buckets on schedule |
 | **ALB Logs to YDB** | `06-alb-logging-to-ydb` | Automatically processes Cloud Logging messages from ALB and stores them in YDB for analysis. [Tutorial for PostgreSQL is available](https://yandex.cloud/en/docs/functions/tutorials/logging) | Store and analyze load balancer logs in a structured database |
 | **S3 Logs to YDB** | `07-bucket-logs-to-ydb` | Automatically processes S3 bucket access logs and stores them in YDB for analysis | Store and analyze S3 bucket access patterns, monitor usage, and track requests in a structured database |
+| **Snapshots Clean Up** | `08-snapshots-clean-up` | Automatically deletes old compute disk snapshots based on age | Clean up disk snapshots older than specified number of days to save storage costs |
 
 ## Quick Start
 
