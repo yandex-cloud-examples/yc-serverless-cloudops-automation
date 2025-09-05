@@ -1,0 +1,10 @@
+provider_key_file   = "../key.json"
+cloud_id            = "b1g3oxxxxxxxxxxxxxxx"
+folder_id           = "b1g7jxxxxxxxxxxxxxxx"
+zone                = "ru-central1-a"
+
+# Запускать удаление каждую ночь
+cron_trigger        = "0 0 ? * * *"
+
+# Удалять снимки старше 30 дней
+snapshot_age_days   = 30
